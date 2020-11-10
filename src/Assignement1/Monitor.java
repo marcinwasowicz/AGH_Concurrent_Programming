@@ -24,5 +24,5 @@ public abstract class Monitor {
 
     public abstract void produce(int producerID, int numOfItems, int val) throws InterruptedException;
 
-    public abstract  void consume(int consumerID, int numOfItems) throws  InterruptedException;
+    public abstract void consume(int consumerID, int numOfItems) throws  InterruptedException;
 }
