@@ -9,32 +9,36 @@ public class ActivationQueue {
     private Servant servant;
     private LinkedList<ProducerRequest> producerRequests;
     private LinkedList<ConsumerRequest> consumerRequests;
-    private Lock lock;
+    private Lock producerLock;
+    private Lock consumerLock;
 
     public ActivationQueue(Future future, Servant servant) {
         this.future = future;
         this.servant = servant;
         this.consumerRequests = new LinkedList<>();
         this.producerRequests = new LinkedList<>();
-        this.lock = new ReentrantLock();
+        this.producerLock = new ReentrantLock();
+        this.consumerLock = new ReentrantLock();
     }
 
     public Future addProducerRequest(int producerID, int[] items) {
-        this.lock.lock();
+        this.producerLock.lock();
         this.producerRequests.addLast(new ProducerRequest(producerID, items));
-        this.lock.unlock();
+        this.producerLock.unlock();
         return this.future;
     }
 
     public Future addConsumerRequest(int consumerID, int numberOfItems) {
-        this.lock.lock();
+        this.consumerLock.lock();
         this.consumerRequests.addLast(new ConsumerRequest(consumerID, numberOfItems));
-        this.lock.unlock();
+        this.consumerLock.unlock();
         return this.future;
     }
 
     public Object getRequest() {
-        this.lock.lock();
+        this.producerLock.lock();
+        this.consumerLock.lock();
+
         boolean canProduce = this.canProduce();
         boolean canConsume = this.canConsume();
         Object result = null;
@@ -45,7 +49,10 @@ public class ActivationQueue {
         } else if (canProduce) {
             result = this.getFirstProducerRequest();
         }
-        this.lock.unlock();
+
+        this.consumerLock.unlock();
+        this.producerLock.unlock();
+
         return result;
     }
 

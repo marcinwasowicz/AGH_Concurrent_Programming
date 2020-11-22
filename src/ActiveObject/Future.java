@@ -37,5 +37,4 @@ public class Future {
     public void closeConsumerRequest(int consumerID){
         this.consumerRequests[consumerID] = null;
     }
-
 }
