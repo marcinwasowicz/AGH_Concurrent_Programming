@@ -1,17 +1,17 @@
 package ActiveObject;
 
-public class ProducerFuture {
+public class Future {
     private volatile boolean isDone;
 
-    public ProducerFuture(){
+    public Future(){
         this.isDone = false;
     }
 
-    public boolean queryProducerRequest(){
+    public boolean queryRequest(){
         return this.isDone;
     }
 
-    public void confirmProducerRequest(){
+    public void confirmRequest(){
         this.isDone = true;
     }
 }

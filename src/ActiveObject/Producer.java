@@ -1,6 +1,5 @@
 package ActiveObject;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class Producer implements Runnable{
@@ -22,25 +21,17 @@ public class Producer implements Runnable{
     public void run() {
         while(true){
             int[] items = this.createItems();
-            ProducerFuture producerFuture = this.createRequest(items);
-            while(!this.tryGetResult(producerFuture, items)){}
+            Future producerFuture = this.createRequest(items);
+            while(!this.tryGetResult(producerFuture)){}
         }
     }
 
-    private ProducerFuture createRequest(int[] items){
-        return this.activationQueue.addProducerRequest(items);
+    private Future createRequest(int[] items){
+        return this.activationQueue.addProducerRequest(this.ID, items);
     }
 
-    private void printConfirmationMessage(int[] items){
-        System.out.println("Producer of ID: " + this.ID + " produced items: " + Arrays.toString(items));
-    }
-
-    private boolean tryGetResult(ProducerFuture producerFuture, int[] items){
-        if(!producerFuture.queryProducerRequest()){
-            return false;
-        }
-        this.printConfirmationMessage(items);
-        return true;
+    private boolean tryGetResult(Future producerFuture){
+       return producerFuture.queryRequest();
     }
 
     private int[] createItems(){

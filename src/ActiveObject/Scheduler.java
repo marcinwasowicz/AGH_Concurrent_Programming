@@ -1,6 +1,6 @@
 package ActiveObject;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 
 public class Scheduler implements Runnable{
     private ActivationQueue activationQueue;
@@ -32,12 +32,22 @@ public class Scheduler implements Runnable{
     }
 
     private void executeProduction(ProducerRequest producerRequest){
-        this.servant.addItems(producerRequest.getItems());
-        producerRequest.getProducerFuture().confirmProducerRequest();
+        HashMap<Integer, Integer> items = this.servant.addItems(producerRequest.getItems());
+        this.printProducerMessage(producerRequest, items);
+        producerRequest.getProducerFuture().confirmRequest();
     }
 
     private void executeConsumption(ConsumerRequest consumerRequest){
-        LinkedList<Integer> items = this.servant.consumeItems(consumerRequest.getNumberOtItems());
-        consumerRequest.getConsumerFuture().confirmConsumerRequest(items);
+        HashMap<Integer, Integer> items = this.servant.consumeItems(consumerRequest.getNumberOtItems());
+        this.printConsumerMessage(consumerRequest, items);
+        consumerRequest.getConsumerFuture().confirmRequest();
+    }
+
+    private void printConsumerMessage(ConsumerRequest consumerRequest, HashMap<Integer, Integer> items){
+        System.out.println("Consumer of ID: " + consumerRequest.getConsumerID() + " consumed: " + items.toString());
+    }
+
+    private void printProducerMessage(ProducerRequest producerRequest, HashMap<Integer, Integer> items){
+        System.out.println("Producer od ID: " + producerRequest.getProducerID() + " produced: " + items.toString());
     }
 }

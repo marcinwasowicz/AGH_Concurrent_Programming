@@ -4,12 +4,14 @@ public class ProducerRequest {
 
     private long schedulingTimeStamp;
     private int[] items;
-    private ProducerFuture producerFuture;
+    private Future producerFuture;
+    private int producerID;
 
-    public ProducerRequest(int[] items, ProducerFuture producerFuture){
+    public ProducerRequest(int producerID, int[] items, Future producerFuture){
         this.items = items;
         this.schedulingTimeStamp = System.nanoTime();
         this.producerFuture = producerFuture;
+        this.producerID = producerID;
     }
 
     public int[] getItems(){
@@ -24,7 +26,11 @@ public class ProducerRequest {
         return this.schedulingTimeStamp;
     }
 
-    public ProducerFuture getProducerFuture(){
+    public Future getProducerFuture(){
         return this.producerFuture;
+    }
+
+    public int getProducerID() {
+        return producerID;
     }
 }

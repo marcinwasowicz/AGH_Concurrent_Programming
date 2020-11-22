@@ -1,6 +1,5 @@
 package ActiveObject;
 
-import java.util.LinkedList;
 import java.util.Random;
 
 public class Consumer implements Runnable{
@@ -20,26 +19,17 @@ public class Consumer implements Runnable{
     @Override
     public void run() {
         while(true){
-            ConsumerFuture future = this.createRequest();
+            Future future = this.createRequest();
             while(!this.tryGetResult(future)){}
         }
     }
 
-    private ConsumerFuture createRequest(){
-        return this.activationQueue.addConsumerRequest(this.random.nextInt(this.maxSize));
+    private Future createRequest(){
+        return this.activationQueue.addConsumerRequest(this.ID,this.random.nextInt(this.maxSize));
     }
 
-    private void printConfirmationMessage(LinkedList<Integer> items){
-        System.out.println("Consumer of ID: " + this.ID + " consumed items: " + items.toString());
-    }
-
-    private boolean tryGetResult(ConsumerFuture future){
-        LinkedList<Integer> items = future.queryConsumerRequest();
-        if(items == null){
-            return false;
-        }
-        this.printConfirmationMessage(items);
-        return true;
+    private boolean tryGetResult(Future future){
+       return future.queryRequest();
     }
 }
 

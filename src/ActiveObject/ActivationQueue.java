@@ -19,18 +19,18 @@ public class ActivationQueue {
         this.consumerLock = new ReentrantLock();
     }
 
-    public ProducerFuture addProducerRequest(int[] items) {
+    public Future addProducerRequest(int producerID, int[] items) {
         this.producerLock.lock();
-        ProducerFuture producerFuture = new ProducerFuture();
-        this.producerRequests.addLast(new ProducerRequest(items, producerFuture));
+        Future producerFuture = new Future();
+        this.producerRequests.addLast(new ProducerRequest(producerID, items, producerFuture));
         this.producerLock.unlock();
         return producerFuture;
     }
 
-    public ConsumerFuture addConsumerRequest(int numberOfItems) {
+    public Future addConsumerRequest(int consumerID, int numberOfItems) {
         this.consumerLock.lock();
-        ConsumerFuture consumerFuture = new ConsumerFuture();
-        this.consumerRequests.addLast(new ConsumerRequest(numberOfItems, consumerFuture));
+        Future consumerFuture = new Future();
+        this.consumerRequests.addLast(new ConsumerRequest(consumerID, numberOfItems, consumerFuture));
         this.consumerLock.unlock();
         return consumerFuture;
     }
