@@ -20,22 +20,21 @@ public class Consumer implements Runnable{
     @Override
     public void run() {
         while(true){
-            Future future = this.createRequest();
+            ConsumerFuture future = this.createRequest();
             while(!this.tryGetResult(future)){}
-            future.closeConsumerRequest(this.ID);
         }
     }
 
-    private Future createRequest(){
-        return this.activationQueue.addConsumerRequest(this.ID, this.random.nextInt(this.maxSize));
+    private ConsumerFuture createRequest(){
+        return this.activationQueue.addConsumerRequest(this.random.nextInt(this.maxSize));
     }
 
     private void printConfirmationMessage(LinkedList<Integer> items){
         System.out.println("Consumer of ID: " + this.ID + " consumed items: " + items.toString());
     }
 
-    private boolean tryGetResult(Future future){
-        LinkedList<Integer> items = future.queryConsumerRequest(this.ID);
+    private boolean tryGetResult(ConsumerFuture future){
+        LinkedList<Integer> items = future.queryConsumerRequest();
         if(items == null){
             return false;
         }

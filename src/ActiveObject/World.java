@@ -3,10 +3,9 @@ package ActiveObject;
 public class World {
     public static void main(String[] args) throws InterruptedException {
         Servant servant = new Servant(Parameters.servantSize);
-        Future future = new Future(Parameters.numberOfProducers, Parameters.numberOfConsumers);
 
-        ActivationQueue activationQueue = new ActivationQueue(future, servant);
-        Thread scheduler = new Thread(new Scheduler(servant, future, activationQueue));
+        ActivationQueue activationQueue = new ActivationQueue(servant);
+        Thread scheduler = new Thread(new Scheduler(servant, activationQueue));
 
         Thread[] producers = new Thread[Parameters.numberOfProducers];
         Thread[] consumers = new Thread[Parameters.numberOfConsumers];

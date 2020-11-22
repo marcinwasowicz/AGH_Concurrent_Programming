@@ -5,15 +5,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ActivationQueue {
-    private Future future;
     private Servant servant;
     private LinkedList<ProducerRequest> producerRequests;
     private LinkedList<ConsumerRequest> consumerRequests;
     private Lock producerLock;
     private Lock consumerLock;
 
-    public ActivationQueue(Future future, Servant servant) {
-        this.future = future;
+    public ActivationQueue(Servant servant) {
         this.servant = servant;
         this.consumerRequests = new LinkedList<>();
         this.producerRequests = new LinkedList<>();
@@ -21,18 +19,20 @@ public class ActivationQueue {
         this.consumerLock = new ReentrantLock();
     }
 
-    public Future addProducerRequest(int producerID, int[] items) {
+    public ProducerFuture addProducerRequest(int[] items) {
         this.producerLock.lock();
-        this.producerRequests.addLast(new ProducerRequest(producerID, items));
+        ProducerFuture producerFuture = new ProducerFuture();
+        this.producerRequests.addLast(new ProducerRequest(items, producerFuture));
         this.producerLock.unlock();
-        return this.future;
+        return producerFuture;
     }
 
-    public Future addConsumerRequest(int consumerID, int numberOfItems) {
+    public ConsumerFuture addConsumerRequest(int numberOfItems) {
         this.consumerLock.lock();
-        this.consumerRequests.addLast(new ConsumerRequest(consumerID, numberOfItems));
+        ConsumerFuture consumerFuture = new ConsumerFuture();
+        this.consumerRequests.addLast(new ConsumerRequest(numberOfItems, consumerFuture));
         this.consumerLock.unlock();
-        return this.future;
+        return consumerFuture;
     }
 
     public Object getRequest() {

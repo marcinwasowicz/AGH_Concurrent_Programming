@@ -22,22 +22,21 @@ public class Producer implements Runnable{
     public void run() {
         while(true){
             int[] items = this.createItems();
-            Future future = this.createRequest(items);
-            while(!this.tryGetResult(future, items)){}
-            future.closeProducerRequest(this.ID);
+            ProducerFuture producerFuture = this.createRequest(items);
+            while(!this.tryGetResult(producerFuture, items)){}
         }
     }
 
-    private Future createRequest(int[] items){
-        return this.activationQueue.addProducerRequest(this.ID, items);
+    private ProducerFuture createRequest(int[] items){
+        return this.activationQueue.addProducerRequest(items);
     }
 
     private void printConfirmationMessage(int[] items){
         System.out.println("Producer of ID: " + this.ID + " produced items: " + Arrays.toString(items));
     }
 
-    private boolean tryGetResult(Future future, int[] items){
-        if(!future.queryProducerRequest(this.ID)){
+    private boolean tryGetResult(ProducerFuture producerFuture, int[] items){
+        if(!producerFuture.queryProducerRequest()){
             return false;
         }
         this.printConfirmationMessage(items);
