@@ -3,7 +3,7 @@ package ActiveObject;
 public class World {
     public static void main(String[] args) throws InterruptedException {
         Servant servant = new Servant(Parameters.servantSize);
-        Future future = new Future();
+        Future future = new Future(Parameters.numberOfProducers, Parameters.numberOfConsumers);
 
         ActivationQueue activationQueue = new ActivationQueue(future, servant);
         Thread scheduler = new Thread(new Scheduler(servant, future, activationQueue));

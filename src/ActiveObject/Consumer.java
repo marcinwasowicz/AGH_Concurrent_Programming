@@ -27,7 +27,7 @@ public class Consumer implements Runnable{
     }
 
     private Future createRequest(){
-        return this.activationQueue.addConsumerRequest(this.ID, this.random.nextInt(this.maxSize + 1));
+        return this.activationQueue.addConsumerRequest(this.ID, this.random.nextInt(this.maxSize));
     }
 
     private void printConfirmationMessage(LinkedList<Integer> items){

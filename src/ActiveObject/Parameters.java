@@ -1,8 +1,8 @@
 package ActiveObject;
 
 public class Parameters {
-    public static final int numberOfProducers = 3;
-    public static final int numberOfConsumers = 5;
-    public static final int servantSize = 10;
-    public static final int maximumSize = 5;
+    public static final int numberOfProducers = 100;
+    public static final int numberOfConsumers = 200;
+    public static final int servantSize = 24;
+    public static final int maximumSize = 13;
 }

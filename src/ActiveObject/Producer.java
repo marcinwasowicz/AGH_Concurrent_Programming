@@ -45,7 +45,7 @@ public class Producer implements Runnable{
     }
 
     private int[] createItems(){
-        int numberOfItems = this.random.nextInt(this.maxSize + 1);
+        int numberOfItems = this.random.nextInt(this.maxSize);
         int[] items = new int[numberOfItems];
         for(int i = 0; i<numberOfItems; i++){
             items[i] = this.random.nextInt();

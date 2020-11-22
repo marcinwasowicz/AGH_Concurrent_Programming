@@ -1,47 +1,41 @@
 package ActiveObject;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Future {
-    private HashMap<Integer, Boolean> producerRequests;
-    private HashMap<Integer, LinkedList<Integer>> consumerRequests;
+    private volatile boolean[] producerRequests;
+    private volatile LinkedList<Integer>[] consumerRequests;
 
-    public Future(){
-        this.producerRequests = new HashMap<>();
-        this.consumerRequests = new HashMap<>();
-    }
-
-    public void initProducerRequest(int producerID){
-        this.producerRequests.put(producerID, false);
-    }
-
-    public void initConsumerRequest(int consumerID){
-        this.consumerRequests.put(consumerID, null);
+    public Future(int numberOfProducers, int numberOfConsumers) {
+        this.producerRequests = new boolean[numberOfProducers];
+        Arrays.fill(this.producerRequests, false);
+        this.consumerRequests = new LinkedList[numberOfConsumers];
+        Arrays.fill(this.consumerRequests, null);
     }
 
     public void confirmProducerRequest(int producerID){
-        this.producerRequests.put(producerID, true);
+        this.producerRequests[producerID] = true;
     }
 
     public void confirmConsumerRequest(int consumerID, LinkedList<Integer> items){
-        this.consumerRequests.put(consumerID, items);
+        this.consumerRequests[consumerID] = items;
     }
 
     public boolean queryProducerRequest(int producerID){
-        return this.producerRequests.get(producerID);
+        return this.producerRequests[producerID];
     }
 
     public LinkedList<Integer> queryConsumerRequest(int consumerID){
-       return this.consumerRequests.get(consumerID);
+        return this.consumerRequests[consumerID];
     }
 
     public void closeProducerRequest(int producerID){
-        this.producerRequests.remove(producerID);
+        this.producerRequests[producerID] = false;
     }
 
     public void closeConsumerRequest(int consumerID){
-        this.consumerRequests.remove(consumerID);
+        this.consumerRequests[consumerID] = null;
     }
 
 }
