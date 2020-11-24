@@ -32,22 +32,30 @@ public class Scheduler implements Runnable{
     }
 
     private void executeProduction(ProducerRequest producerRequest){
+        long embarkTime = this.getEmbarkTime();
         HashMap<Integer, Integer> items = this.servant.addItems(producerRequest.getItems());
-        this.printProducerMessage(producerRequest, items);
+        this.printProducerMessage(producerRequest, items, embarkTime);
         producerRequest.getProducerFuture().confirmRequest();
     }
 
     private void executeConsumption(ConsumerRequest consumerRequest){
+        long embarkTime = this.getEmbarkTime();
         HashMap<Integer, Integer> items = this.servant.consumeItems(consumerRequest.getNumberOtItems());
-        this.printConsumerMessage(consumerRequest, items);
+        this.printConsumerMessage(consumerRequest, items, embarkTime);
         consumerRequest.getConsumerFuture().confirmRequest();
     }
 
-    private void printConsumerMessage(ConsumerRequest consumerRequest, HashMap<Integer, Integer> items){
-        System.out.println("Consumer of ID: " + consumerRequest.getConsumerID() + " consumed: " + items.toString());
+    private void printConsumerMessage(ConsumerRequest consumerRequest, HashMap<Integer, Integer> items, long embarkTime){
+        System.out.println("Consumer of ID: " + consumerRequest.getConsumerID() + " consumed: " + items.toString() + 
+        " time elapsed: " + Math.abs(embarkTime - consumerRequest.getSchedulingTimeStamp()));
     }
 
-    private void printProducerMessage(ProducerRequest producerRequest, HashMap<Integer, Integer> items){
-        System.out.println("Producer od ID: " + producerRequest.getProducerID() + " produced: " + items.toString());
+    private void printProducerMessage(ProducerRequest producerRequest, HashMap<Integer, Integer> items, long embarkTime){
+        System.out.println("Producer od ID: " + producerRequest.getProducerID() + " produced: " + items.toString() + 
+        " time elapsed: " + Math.abs(embarkTime - producerRequest.getSchedulingTimeStamp()));
+    }
+
+    private long getEmbarkTime(){
+        return System.nanoTime();
     }
 }
