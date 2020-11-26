@@ -1,6 +1,7 @@
 package ActiveObject;
 
 import java.util.LinkedList;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -8,50 +9,57 @@ public class ActivationQueue {
     private Servant servant;
     private LinkedList<ProducerRequest> producerRequests;
     private LinkedList<ConsumerRequest> consumerRequests;
-    private Lock producerLock;
-    private Lock consumerLock;
+    private Lock lock;
+    private Condition condition;
 
     public ActivationQueue(Servant servant) {
         this.servant = servant;
         this.consumerRequests = new LinkedList<>();
         this.producerRequests = new LinkedList<>();
-        this.producerLock = new ReentrantLock();
-        this.consumerLock = new ReentrantLock();
+        this.lock = new ReentrantLock();
+        this.condition = this.lock.newCondition();
     }
 
     public Future addProducerRequest(int producerID, int[] items) {
-        this.producerLock.lock();
+        this.lock.lock();
         Future producerFuture = new Future();
         this.producerRequests.addLast(new ProducerRequest(producerID, items, producerFuture));
-        this.producerLock.unlock();
+        this.condition.signal();
+        this.lock.unlock();
         return producerFuture;
     }
 
     public Future addConsumerRequest(int consumerID, int numberOfItems) {
-        this.consumerLock.lock();
+        this.lock.lock();
         Future consumerFuture = new Future();
         this.consumerRequests.addLast(new ConsumerRequest(consumerID, numberOfItems, consumerFuture));
-        this.consumerLock.unlock();
+        this.condition.signal();
+        this.lock.unlock();
         return consumerFuture;
     }
 
-    public Object getRequest() {
-        this.producerLock.lock();
-        this.consumerLock.lock();
+    public Object getRequest() throws InterruptedException {
+        this.lock.lock();
 
+        while(!this.canProduce() && !this.canConsume()){
+            this.condition.await();
+        }
+        
         boolean canProduce = this.canProduce();
         boolean canConsume = this.canConsume();
+
         Object result = null;
         if (canConsume && canProduce) {
             result = this.getEarlierRequest();
-        } else if (canConsume) {
+        } 
+        else if (canConsume) {
             result = this.getFirstConsumerRequest();
-        } else if (canProduce) {
+        } 
+        else {
             result = this.getFirstProducerRequest();
         }
 
-        this.consumerLock.unlock();
-        this.producerLock.unlock();
+        this.lock.unlock();
 
         return result;
     }
