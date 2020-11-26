@@ -12,22 +12,24 @@ public class Scheduler implements Runnable{
     }
 
     @Override
-    public void run() {
+    public void run(){
         while(true) {
-            Object task = this.getTask();
-            if(task == null){
-                continue;
-            }
-            else if (task instanceof ProducerRequest) {
-                this.executeProduction((ProducerRequest) task);
-            }
-            else {
-                this.executeConsumption((ConsumerRequest) task);
+            try {
+                Object task = this.getTask();
+                if (task instanceof ProducerRequest) {
+                    this.executeProduction((ProducerRequest) task);
+                }
+                else {
+                    this.executeConsumption((ConsumerRequest) task);
+                }
+            } 
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
-    private Object getTask(){
+    private Object getTask() throws InterruptedException{
         return this.activationQueue.getRequest();
     }
 
@@ -51,7 +53,7 @@ public class Scheduler implements Runnable{
     }
 
     private void printProducerMessage(ProducerRequest producerRequest, HashMap<Integer, Integer> items, long embarkTime){
-        System.out.println("Producer od ID: " + producerRequest.getProducerID() + " produced: " + items.toString() + 
+        System.out.println("Producer of ID: " + producerRequest.getProducerID() + " produced: " + items.toString() + 
         " time elapsed: " + Math.abs(embarkTime - producerRequest.getSchedulingTimeStamp()));
     }
 
