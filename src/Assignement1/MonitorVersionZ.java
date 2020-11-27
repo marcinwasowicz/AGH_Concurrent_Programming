@@ -17,6 +17,8 @@ public class MonitorVersionZ extends Monitor{
     @Override
     public void produce(int producerID, int[] items) throws InterruptedException {
         lock.lock();
+        long lockAccessTime = this.getLockAccessTime();
+
         if(!this.isFirstProducer){
             restProducers.await();
         }
@@ -26,9 +28,9 @@ public class MonitorVersionZ extends Monitor{
         }
 
         this.isFirstProducer = true;
-
+        long taskEmbarkTime = this.getTaskEmbarkTime();
         HashMap<Integer, Integer> addedItems = this.buffer.addItem(items);
-        this.printProducerMessage(producerID, addedItems);
+        this.printProducerMessage(producerID, addedItems, lockAccessTime, taskEmbarkTime);
         this.restProducers.signal();
         this.firstConsumer.signal();
         lock.unlock();
@@ -37,6 +39,7 @@ public class MonitorVersionZ extends Monitor{
     @Override
     public void consume(int consumerID, int numOfItems) throws InterruptedException {
         lock.lock();
+        long lockAccessTime = this.getLockAccessTime();
         if(!this.isFirstConsumer){
             restConsumers.await();
         }
@@ -46,9 +49,9 @@ public class MonitorVersionZ extends Monitor{
         }
 
         this.isFirstConsumer = true;
-
+        long taskEmbarkTime = this.getTaskEmbarkTime();
         HashMap<Integer, Integer> readItems = this.buffer.readItems(numOfItems);
-        this.printConsumerMessage(consumerID, readItems);
+        this.printConsumerMessage(consumerID, readItems, lockAccessTime, taskEmbarkTime);
         this.restConsumers.signal();
         this.firstProducer.signal();
         lock.unlock();

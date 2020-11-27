@@ -27,11 +27,21 @@ public abstract class Monitor {
 
     public abstract void consume(int consumerID, int numOfItems) throws  InterruptedException;
 
-    protected void printProducerMessage(int producerID, HashMap<Integer, Integer> addedItems){
-        System.out.println("Producer of ID: " + producerID + " produced: " + addedItems);
+    protected void printProducerMessage(int producerID, HashMap<Integer, Integer> addedItems, long lockAccesTime, long taskEmbarkTime){
+        System.out.println("Producer of ID: " + producerID + " produced: " + addedItems + " time elapsed: " + 
+        Math.abs(lockAccesTime - taskEmbarkTime));
     }
 
-    protected void printConsumerMessage(int consumerID, HashMap<Integer, Integer> readItems){
-        System.out.println("Consumer of ID: " + consumerID + " consumed: " + readItems);
+    protected void printConsumerMessage(int consumerID, HashMap<Integer, Integer> readItems, long lockAccesTime, long taskEmbarkTime){
+        System.out.println("Consumer of ID: " + consumerID + " consumed: " + readItems + " time elapsed: " + 
+        Math.abs(lockAccesTime - taskEmbarkTime));
+    }
+
+    protected long getLockAccessTime(){
+        return System.nanoTime();
+    }
+
+    protected long getTaskEmbarkTime(){
+        return System.nanoTime();
     }
 }
