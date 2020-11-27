@@ -1,5 +1,7 @@
 package Assignement1;
 
+import java.util.HashMap;
+
 public class MonitorVersionZ extends Monitor{
 
     private boolean isFirstProducer;
@@ -13,20 +15,20 @@ public class MonitorVersionZ extends Monitor{
     }
 
     @Override
-    public void produce(int producerID, int numOfItems, int val) throws InterruptedException {
+    public void produce(int producerID, int[] items) throws InterruptedException {
         lock.lock();
         if(!this.isFirstProducer){
             restProducers.await();
         }
-        while(!this.buffer.canWrite(numOfItems)){
+        while(!this.buffer.canWrite(items.length)){
             this.isFirstProducer = false;
             firstProducer.await();
         }
 
         this.isFirstProducer = true;
 
-        System.out.println("Producer of ID: " + producerID + " is producing:");
-        this.buffer.addItem(numOfItems, val);
+        HashMap<Integer, Integer> addedItems = this.buffer.addItem(items);
+        this.printProducerMessage(producerID, addedItems);
         this.restProducers.signal();
         this.firstConsumer.signal();
         lock.unlock();
@@ -45,8 +47,8 @@ public class MonitorVersionZ extends Monitor{
 
         this.isFirstConsumer = true;
 
-        System.out.println("Consumer of ID: " + consumerID + " is consuming:");
-        this.buffer.readItems(numOfItems);
+        HashMap<Integer, Integer> readItems = this.buffer.readItems(numOfItems);
+        this.printConsumerMessage(consumerID, readItems);
         this.restConsumers.signal();
         this.firstProducer.signal();
         lock.unlock();

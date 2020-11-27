@@ -16,7 +16,7 @@ public class Consumer implements Runnable{
     }
 
     private void consume() throws InterruptedException {
-        int numItems = random.nextInt(this.maxNumItems) + 1;
+        int numItems = random.nextInt(this.maxNumItems);
         this.monitor.consume(consumerID, numItems);
     }
 

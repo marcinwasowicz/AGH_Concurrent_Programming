@@ -1,5 +1,7 @@
 package Assignement1;
 
+import java.util.HashMap;
+
 public class Buffer {
     private final int size;
     private final int[] data;
@@ -17,23 +19,27 @@ public class Buffer {
         this.numberOfItems = 0;
     }
 
-    public void addItem(int numItems, int item){
-        for(int i = 0; i<numItems; i++){
-            System.out.println("Wrote " + item + " at index: " + this.writingPoint);
+    public HashMap<Integer, Integer> addItem(int[] items){
+        HashMap<Integer, Integer> result = new HashMap<>();
+        for(int item : items){
+            result.put(this.writingPoint, item);
             this.data[this.writingPoint] = item;
             this.writingPoint++;
             this.writingPoint %= this.size;
             this.numberOfItems++;
         }
+        return result;
     }
 
-    public void readItems(int numItems){
+    public HashMap<Integer, Integer> readItems(int numItems){
+        HashMap<Integer, Integer> result = new HashMap<>();
         for(int i = 0; i<numItems; i++){
-            System.out.println("Read " + this.data[this.readingPoint] + " at index " + this.readingPoint);
+            result.put(this.readingPoint, this.data[this.readingPoint]);
             this.readingPoint++;
             this.readingPoint %= this.size;
             this.numberOfItems--;
         }
+        return result;
     }
 
     public boolean canWrite(int numItems){

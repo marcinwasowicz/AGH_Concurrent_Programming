@@ -1,5 +1,6 @@
 package Assignement1;
 
+import java.util.HashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -22,7 +23,15 @@ public abstract class Monitor {
         this.restProducers = lock.newCondition();
     }
 
-    public abstract void produce(int producerID, int numOfItems, int val) throws InterruptedException;
+    public abstract void produce(int producerID, int[] items) throws InterruptedException;
 
     public abstract void consume(int consumerID, int numOfItems) throws  InterruptedException;
+
+    protected void printProducerMessage(int producerID, HashMap<Integer, Integer> addedItems){
+        System.out.println("Producer of ID: " + producerID + " produced: " + addedItems);
+    }
+
+    protected void printConsumerMessage(int consumerID, HashMap<Integer, Integer> readItems){
+        System.out.println("Consumer of ID: " + consumerID + " consumed: " + readItems);
+    }
 }

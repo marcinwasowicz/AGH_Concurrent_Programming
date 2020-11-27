@@ -1,22 +1,25 @@
 package Assignement1;
 
-public class MonitorVersionW extends Monitor{
+import java.util.HashMap;
+
+public class MonitorVersionW extends Monitor {
 
     public MonitorVersionW(int size){
         super(size);
     }
 
     @Override
-    public void produce(int producerID, int numOfItems, int val) throws InterruptedException {
+    public void produce(int producerID, int[] items) throws InterruptedException {
         lock.lock();
         if(this.lock.hasWaiters(this.firstProducer)){
             restProducers.await();
         }
-        while(!this.buffer.canWrite(numOfItems)){
+        while(!this.buffer.canWrite(items.length)){
             firstProducer.await();
         }
-        System.out.println("Producer of ID: " + producerID + " is producing:");
-        this.buffer.addItem(numOfItems, val);
+        
+        HashMap<Integer, Integer> addedItems = this.buffer.addItem(items);
+        this.printProducerMessage(producerID, addedItems);
         this.restProducers.signal();
         this.firstConsumer.signal();
         lock.unlock();
@@ -31,8 +34,9 @@ public class MonitorVersionW extends Monitor{
         while(!this.buffer.canRead(numOfItems)){
             firstConsumer.await();
         }
-        System.out.println("Consumer of ID: " + consumerID + " is consuming:");
-        this.buffer.readItems(numOfItems);
+        
+        HashMap<Integer, Integer> readItems = this.buffer.readItems(numOfItems);
+        this.printConsumerMessage(consumerID, readItems);
         this.restConsumers.signal();
         this.firstProducer.signal();
         lock.unlock();

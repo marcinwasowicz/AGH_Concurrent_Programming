@@ -20,7 +20,7 @@ public class Main {
         }
 
         for(int i = 0; i<producers.length; i++){
-            producers[i] = new Thread(new Producer(i, maxNumItems, i, monitor));
+            producers[i] = new Thread(new Producer(i, maxNumItems, monitor));
             producers[i].start();
         }
 

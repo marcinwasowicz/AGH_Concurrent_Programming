@@ -6,21 +6,28 @@ public class Producer implements Runnable {
 
     private int producerID;
     private int maxNumItems;
-    private int value;
     private Monitor monitor;
     private Random random;
 
-    public Producer(int producerID, int maxNumItems, int value, Monitor monitor){
+    public Producer(int producerID, int maxNumItems, Monitor monitor){
         this.producerID = producerID;
         this.maxNumItems = maxNumItems;
-        this.value = value;
         this.monitor = monitor;
         this.random = new Random();
     }
 
     private void produce() throws InterruptedException {
-        int numItems = this.random.nextInt(this.maxNumItems) + 1;
-        this.monitor.produce(this.producerID, numItems, this.value);
+        int[] items = this.getRandomArray();
+        this.monitor.produce(this.producerID, items);
+    }
+
+    private int[] getRandomArray(){
+        int numItems = this.random.nextInt(this.maxNumItems);
+        int[] items = new int[numItems];
+        for(int i = 0; i<numItems; i++){
+            items[i] = this.random.nextInt();
+        }
+        return items;
     }
 
     @Override
@@ -33,4 +40,5 @@ public class Producer implements Runnable {
             }
         }
     }
+
 }
