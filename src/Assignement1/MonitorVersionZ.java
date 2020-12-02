@@ -34,6 +34,7 @@ public class MonitorVersionZ extends Monitor{
         this.restProducers.signal();
         this.firstConsumer.signal();
         lock.unlock();
+        this.doAdditionalWork();
     }
 
     @Override
@@ -55,5 +56,6 @@ public class MonitorVersionZ extends Monitor{
         this.restConsumers.signal();
         this.firstProducer.signal();
         lock.unlock();
+        this.doAdditionalWork();
     }
 }

@@ -20,7 +20,17 @@ public class Consumer implements Runnable{
     public void run() {
         while(true){
             Future future = this.createRequest();
-            while(!this.tryGetResult(future)){}
+            for(int taskCount = 0; taskCount<Parameters.additionalWork;){
+                while(!this.tryGetResult(future)){
+                    for(int i = 0; taskCount<Parameters.additionalWork && i<Parameters.batchSize; i++){
+                        Math.sin(Parameters.task);
+                        taskCount++;
+                    }
+                }
+                for(;taskCount<Parameters.additionalWork; taskCount++){
+                    Math.sin(Parameters.task);
+                }
+            }
         }
     }
 

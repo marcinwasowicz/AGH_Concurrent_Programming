@@ -44,4 +44,10 @@ public abstract class Monitor {
     protected long getTaskEmbarkTime(){
         return System.nanoTime();
     }
+
+    protected void doAdditionalWork(){
+        for(int i = 0; i<Parameters.additionalWork; i++){
+            Math.sin(Parameters.task);
+        }
+    }
 }

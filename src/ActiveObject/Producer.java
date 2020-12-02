@@ -22,7 +22,17 @@ public class Producer implements Runnable{
         while(true){
             int[] items = this.createItems();
             Future producerFuture = this.createRequest(items);
-            while(!this.tryGetResult(producerFuture)){}
+            for(int taskCount = 0; taskCount<Parameters.additionalWork;){
+                while(!this.tryGetResult(producerFuture)){
+                    for(int i = 0; taskCount<Parameters.additionalWork && i<Parameters.batchSize; i++){
+                        Math.sin(Parameters.task);
+                        taskCount++;
+                    }
+                }
+                for(;taskCount<Parameters.additionalWork; taskCount++){
+                    Math.sin(Parameters.task);
+                }
+            }
         }
     }
 
