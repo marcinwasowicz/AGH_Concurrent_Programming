@@ -38,10 +38,10 @@ def main():
     print("Producers:")
     for thread_id, (count, average_time) in producer_register.items():
         print("Producer of ID: " + str(thread_id) + " fulfilled request " 
-              + str(count) + " times on average and used total scheduler time of : " + str(average_time))
+              + str(count) + " times")
     print("Consumers:")
     for thread_id, (count, average_time) in consumer_register.items():
         print("Consumer of ID: " + str(thread_id) + " fulfilled request " 
-          + str(count) + " times on average and used total scheduler time of : " + str(average_time))
+          + str(count) + " times")
 
 main()
