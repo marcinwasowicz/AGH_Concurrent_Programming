@@ -1,4 +1,4 @@
-package Assignement1;
+package Monitor;
 
 import java.util.HashMap;
 import java.util.concurrent.locks.Condition;

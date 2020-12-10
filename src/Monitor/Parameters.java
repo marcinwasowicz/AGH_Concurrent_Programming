@@ -1,4 +1,4 @@
-package Assignement1;
+package Monitor;
 
 public class Parameters {
     public static final int size = 100;

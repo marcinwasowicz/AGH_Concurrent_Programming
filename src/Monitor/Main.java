@@ -1,4 +1,4 @@
-package Assignement1;
+package Monitor;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
