@@ -22,7 +22,6 @@ public class Producer implements CSProcess{
     public void run(){
         while(true){
             this.chooseOutput().write(message);
-            System.out.println("Sent: " + message);
         }
     }
 
