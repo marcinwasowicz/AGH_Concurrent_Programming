@@ -9,10 +9,12 @@ import org.json.simple.parser.ParseException;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+
+        String configFilePath = args[0];
         ArrayList<Producer> producers = new ArrayList<>();
         ArrayList<Consumer> consumers = new ArrayList<>();
 
-        Parameters parameters = new Parameters(args[0]);
+        Parameters parameters = new Parameters(configFilePath);
 
         for(int i = 0; i<parameters.getNumberOfProducers(); i++){
             producers.add(new Producer(parameters.getMessageConstant() + i));
